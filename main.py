@@ -19,9 +19,10 @@ if __name__ == '__main__':
     TWSE_commission = 1.425 / 1000 + 3 / 2000
     full_data = np.load('../datas/個股期標的歷史股價.npy', allow_pickle='TRUE').item()
     final_results_list = []
+    stock_id = '2892'
 
     # Prepare data
-    dataframe = full_data['2892']
+    dataframe = full_data[stock_id]
     dataframe.reset_index(inplace=True)
     dataframe.rename(columns={'Date': 'datetime'}, inplace=True)
     dataframe.drop(['Close'], axis=1)
@@ -55,7 +56,8 @@ if __name__ == '__main__':
     portfolio_stats = strats[0].analyzers.getbyname('PyFolio')
     returns, positions, transactions, gross_lev = portfolio_stats.get_pf_items()
     returns.index = returns.index.tz_convert(None)
-    quantstats.reports.html(returns, output='stats.html')
+    file_name = stock_id + '_Stats.html'
+    quantstats.reports.html(returns, download_filename=file_name, output='yes', title= stock_id+' 績效表')
 
     # Print out the final result
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue()) # normal mode
