@@ -14,19 +14,20 @@ import strategys as stg
 
 
 if __name__ == '__main__':
+    startcash = 1000000
+    TWSE_commission = 1.425 / 1000 + 3 / 2000
+    full_data = np.load('../datas/個股期標的歷史股價.npy', allow_pickle='TRUE').item()
+    final_results_list = []
 
     # Prepare data
-    full_data = np.load('../datas/個股期標的歷史股價.npy', allow_pickle='TRUE').item()
-    dataframe = full_data['1101']
+    dataframe = full_data['2892']
     dataframe.reset_index(inplace=True)
     dataframe.rename(columns={'Date': 'datetime'}, inplace=True)
-    dataframe.drop(['Close'],axis=1)
+    dataframe.drop(['Close'], axis=1)
     dataframe.rename(columns={'Adj Close':'close'}, inplace=True)
     dataframe.set_index('datetime', inplace=True)
     dataframe['openinterest'] = 0
     data = bt.feeds.PandasData(dataname=dataframe, fromdate=datetime.datetime(2010, 1, 1), todate=datetime.datetime(2022, 12, 31))
-
-    startcash = 2000000
 
     #### normal mode
     # Create a cerebro entity
@@ -38,9 +39,8 @@ if __name__ == '__main__':
     # Set our desired cash start
     cerebro.broker.setcash(startcash)
     # Add a FixedSize sizer according to the stake
-    cerebro.addsizer(bt.sizers.FixedSize, stake=1000)
+    cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
     # Set the commission
-    TWSE_commission = 1.425/1000 + 3/2000
     cerebro.broker.setcommission(commission=TWSE_commission)
     # Add trade log
     cerebro.addanalyzer(log_tools.trade_list, _name='trade_list')
@@ -55,10 +55,10 @@ if __name__ == '__main__':
     # Plot the result
     cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
 
-    # ####
-    # ####
-    # ####
-    # #### optimize mode
+    # # ####
+    # # ####
+    # # ####
+    # # #### optimize mode
     # cerebro = bt.Cerebro(optreturn=False)  # optimize mode
     # # Add a strategy
     # # cerebro.optstrategy(TrendFollowStrategy, volumePeriod = range(30, 50), volumeMultiplier = range(10, 30))
@@ -98,3 +98,47 @@ if __name__ == '__main__':
     #     print('Period: {}, Multiplier: {}, PnL: {}'.format(result[0], result[1], result[2]))
     #
     # plot_tools.my_heatmap(final_results_list)
+
+
+    # # ####
+    # # ####
+    # # ####
+    # # #### Mass backtrade mode
+    # for column in full_data:
+    #     if column != 'TWII':
+    #         dataframe = full_data[column]
+    #         dataframe.reset_index(inplace=True)
+    #         dataframe.rename(columns={'Date': 'datetime'}, inplace=True)
+    #         dataframe.drop(['Close'], axis=1)
+    #         dataframe.rename(columns={'Adj Close': 'close'}, inplace=True)
+    #         dataframe.set_index('datetime', inplace=True)
+    #         dataframe['openinterest'] = 0
+    #         data = bt.feeds.PandasData(dataname=dataframe, fromdate=datetime.datetime(2015, 1, 1),
+    #                                    todate=datetime.datetime(2022, 11, 30))
+    #
+    #         # Create a cerebro entity
+    #         cerebro = bt.Cerebro()  # normal mode
+    #         # Add a strategy
+    #         cerebro.addstrategy(stg.TrendFollowStrategy)
+    #         # Add the Data Feed to Cerebro
+    #         cerebro.adddata(data)
+    #         # Set our desired cash start
+    #         cerebro.broker.setcash(startcash)
+    #         # Add a FixedSize sizer according to the stake
+    #         cerebro.addsizer(bt.sizers.PercentSizer, percents = 50)
+    #         # Set the commission
+    #         cerebro.broker.setcommission(commission=TWSE_commission)
+    #         # Run
+    #         strats = cerebro.run(tradehistory=True)  # normal mode
+    #
+    #         # prepare final result
+    #         value = cerebro.broker.getvalue()
+    #         PnL = round(value - startcash)
+    #         final_results_list.append([column, PnL])
+    #
+    # total_PnL = 0
+    # for result in final_results_list:
+    #     print('Stock: {}, PnL: {}'.format(result[0], result[1]))
+    #     total_PnL += result[1]
+    #
+    # print('Total PnL:{}'.format(total_PnL))

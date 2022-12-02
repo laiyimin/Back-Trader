@@ -82,4 +82,3 @@ class trade_list(bt.Analyzer):
                  'size': size, 'value': value, 'cumpnl': self.cumprofit,
                  'nbars': barlen, 'pnl/bar': round(pbar, 2),
                  'mfe%': round(mfe, 2), 'mae%': round(mae, 2)})
-
