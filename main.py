@@ -9,7 +9,8 @@ import backtrader as bt  # Import the backtrader platform
 from tabulate import tabulate
 import plot_tools, log_tools
 import strategys as stg
-# import pyfolio as pf
+import quantstats
+import pyfolio as pf
 
 
 
@@ -44,16 +45,23 @@ if __name__ == '__main__':
     cerebro.broker.setcommission(commission=TWSE_commission)
     # Add trade log
     cerebro.addanalyzer(log_tools.trade_list, _name='trade_list')
+    cerebro.addanalyzer(bt.analyzers.PyFolio, _name='PyFolio')
     # Run
     strats = cerebro.run(tradehistory=True)  # normal mode
     # get analyzers data, comment out when optimizing
     trade_list = strats[0].analyzers.trade_list.get_analysis()  # normal mode
     print(tabulate(trade_list, headers="keys"))  # normal mode
+    # quantstats
+    portfolio_stats = strats[0].analyzers.getbyname('PyFolio')
+    returns, positions, transactions, gross_lev = portfolio_stats.get_pf_items()
+    returns.index = returns.index.tz_convert(None)
+    quantstats.reports.html(returns, output='stats.html')
+
     # Print out the final result
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue()) # normal mode
 
     # Plot the result
-    cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
+    # cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
 
     # # ####
     # # ####
