@@ -1,4 +1,5 @@
 import backtrader as bt
+import statistics
 
 class heavyTrade(bt.Indicator):
     lines = ('heavyTrade',)
@@ -8,6 +9,26 @@ class heavyTrade(bt.Indicator):
     def __init__(self):
         self.lines.heavyTrade = self.data > self.p.multiplier * bt.ind.MaxN(self.data(-1), period=self.p.period)
 
+
+class HevayTradeByPercentile(bt.Indicator):
+    lines = ("HeavyTrade", )
+
+    params = (
+        ("period", 30),
+        ("multiplier", 2),
+        ("percentile", 90),
+    )
+
+    def __init__(self):
+        self.addminperiod(self.p.period)
+
+    def next(self):
+        volume_array = self.data.get(size=self.p.period)   # 取得過去一段時間內的成交量
+        a = [round(q, 1) for q in statistics.quantiles(volume_array, n=10)]  # 計算百分位（以 10% 為單位）
+        x = -(100-self.p.percentile)/10  # 計算取得第幾十趴的成交量
+        self.l.HeavyTrade[0] = self.data[0] > self.p.multiplier * a[int(x)]
+        # logging
+        # print(self.data[0], self.p.multiplier * a[int(x)])
 
 class SuperTrendBand(bt.Indicator):
     """

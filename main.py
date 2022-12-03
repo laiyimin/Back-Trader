@@ -19,9 +19,9 @@ if __name__ == '__main__':
     TWSE_commission = 1.425 / 1000 + 3 / 2000
     full_data = np.load('../datas/個股期標的歷史股價.npy', allow_pickle='TRUE').item()
     final_results_list = []
-    stock_id = '2892'
 
     # Prepare data
+    stock_id = '1314'
     dataframe = full_data[stock_id]
     dataframe.reset_index(inplace=True)
     dataframe.rename(columns={'Date': 'datetime'}, inplace=True)
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue()) # normal mode
 
     # Plot the result
-    # cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
+    cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
 
     # # ####
     # # ####
@@ -110,10 +110,10 @@ if __name__ == '__main__':
     # plot_tools.my_heatmap(final_results_list)
 
 
-    # # ####
-    # # ####
-    # # ####
-    # # #### Mass backtrade mode
+    # ####
+    # ####
+    # ####
+    # #### Mass backtrade mode
     # for column in full_data:
     #     if column != 'TWII':
     #         dataframe = full_data[column]
