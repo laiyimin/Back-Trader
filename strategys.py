@@ -1,6 +1,7 @@
 import indicators as ind
 import backtrader as bt
 
+# 待辦：用跨度 / 時間比來調整持倉部位
 class TrendFollowStrategy(bt.Strategy):
     params = (
         ('volumePeriod', 40),

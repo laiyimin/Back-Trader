@@ -14,6 +14,7 @@ import pyfolio as pf
 import backtrader.feeds as btfeeds
 import backtrader.indicators as btind
 import indicators as ind
+from plot_tools import getBacktestChart
 
 class PairTradingStrategy(bt.Strategy):
     params = (
@@ -153,4 +154,7 @@ if __name__ == '__main__':
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue()) # normal mode
 
     # Plot the result
-    cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
+    # cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
+
+    figure=cerebro.plot(style = 'candlebars')[0][0]
+    figure[0][0].savefig(f'data/cerebro_{sector}_{direction[0]}_{style[0]}_{date_cur}.png')

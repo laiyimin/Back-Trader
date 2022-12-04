@@ -31,7 +31,9 @@ if __name__ == '__main__':
     dataframe['openinterest'] = 0
     data = bt.feeds.PandasData(dataname=dataframe, fromdate=datetime.datetime(2010, 1, 1), todate=datetime.datetime(2022, 12, 31))
 
-    #### normal mode
+    # ####
+    # #### normal mode
+    # ####
     # Create a cerebro entity
     cerebro = bt.Cerebro()  # normal mode
     # Add a strategy
@@ -65,14 +67,14 @@ if __name__ == '__main__':
     # Plot the result
     cerebro.plot(iplot=False)  # using 'iplot=False' to avoid error message
 
-    # # ####
-    # # ####
-    # # ####
-    # # #### optimize mode
+    # ####
+    # ####
+    # ####
+    # #### optimize mode
     # cerebro = bt.Cerebro(optreturn=False)  # optimize mode
     # # Add a strategy
     # # cerebro.optstrategy(TrendFollowStrategy, volumePeriod = range(30, 50), volumeMultiplier = range(10, 30))
-    # cerebro.optstrategy(TrendFollowStrategy, volumePeriod = range(30, 31), volumeMultiplier = range(10, 15))
+    # cerebro.optstrategy(stg.TrendFollowStrategy, volumePeriod = range(30, 31), volumeMultiplier = range(10, 15))
     # # Add the Data Feed to Cerebro
     # cerebro.adddata(data)
     # # Set our desired cash start
